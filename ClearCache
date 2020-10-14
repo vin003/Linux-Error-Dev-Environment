@@ -1,0 +1,21 @@
+https://linuxhint.com/clear_cache_linux/
+
+The linux file system cache (Page Cache) is used to make IO oTperations faster. 
+Under certain circumstances an administrator or developer might want to manually clear the cache.  In this article we will explain how the Linux File System cache works. 
+Then we will demonstrate how to monitor the cache usage and how to clear the cache.  We will do some simple performance
+
+How Linux File System Cache Works
+The kernel reserves a certain amount of system memory for caching the file system disk accesses in order to make overall performance faster.  
+The cache in linux is called the Page Cache. The size of the page cache is configurable with generous defaults enabled to cache large amounts of disk blocks.  The max size of the cache and the policies of when to evict data from the cache are adjustable with kernel parameters.  The linux cache approach is called a write-back cache.  This means if data is written to disk it is written to memory into the cache and marked as dirty in the cache until it is synchronized to disk.  
+The kernel maintains internal data structures to optimize which data to evict from cache when more space is needed in the cache.
+
+
+
+During Linux read system calls, the kernel will check if the data requested is stored in blocks of data in the cache, that would be a successful cache hit and the data will be returned from the cache without doing any IO to the disk system.  For a cache miss the data will be fetched from IO system and the cache updated based on the caching policies as this same data is likely to be requested again.
+
+
+# free -m
+ dd if=/dev/random of=/root/data_file count=1400000
+# for i in `seq 1 10`; do echo $i; cat data_file >> large_file; done
+cat large_file > /dev/null
+# free -m
